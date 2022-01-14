@@ -7,7 +7,9 @@ import { createTripEventsListTemplate } from './view/trip-events-list-view';
 import { createEventsListItemTemplate } from './view/trip-events-list-item-view';
 import { createEditEventTemplate } from './view/trip-edit-event-view';
 
-const POINT_COUNT = 3;
+import { generatePoint } from './mock/point';
+
+const POINT_COUNT = 5;
 
 const headerMainElement = document.querySelector('.trip-main');
 const pageMainElement = document.querySelector('.page-main');
@@ -15,14 +17,16 @@ const headerMenuElement = headerMainElement.querySelector('.trip-controls__navig
 const headerFilterElement = headerMainElement.querySelector('.trip-controls__filters');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 
-renderTemplate(headerMainElement, createTripInfoTemplate,renderPosition.AFTERBEGIN);
-renderTemplate(headerMenuElement, createTripTabsTemplate, renderPosition.BEFOREEND);
-renderTemplate(headerFilterElement,createTripFilterTemplate,renderPosition.BEFOREEND);
-renderTemplate(tripEventsElement, createTripSortTemplate, renderPosition.BEFOREEND);
-renderTemplate(tripEventsElement, createTripEventsListTemplate, renderPosition.BEFOREEND);
+renderTemplate(headerMainElement, createTripInfoTemplate(),renderPosition.AFTERBEGIN);
+renderTemplate(headerMenuElement, createTripTabsTemplate(), renderPosition.BEFOREEND);
+renderTemplate(headerFilterElement,createTripFilterTemplate(),renderPosition.BEFOREEND);
+renderTemplate(tripEventsElement, createTripSortTemplate(), renderPosition.BEFOREEND);
+renderTemplate(tripEventsElement, createTripEventsListTemplate(), renderPosition.BEFOREEND);
+
+const points = Array.from({length: POINT_COUNT}, generatePoint);
 
 const eventsListElement = tripEventsElement.querySelector('.trip-events__list');
 for (let i = 0; i < POINT_COUNT; i++) {
-  renderTemplate(eventsListElement, i === 0 ? createEditEventTemplate : createEventsListItemTemplate, renderPosition.BEFOREEND);
+  renderTemplate(eventsListElement, i === 0 ? createEditEventTemplate(points[0]) : createEventsListItemTemplate(points[i]), renderPosition.BEFOREEND);
 }
 

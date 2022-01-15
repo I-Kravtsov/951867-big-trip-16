@@ -1,3 +1,4 @@
+import { createElement } from '../render';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
@@ -30,11 +31,11 @@ const createEventDuration = (from, to) => {
   return eventDuration;
 };
 
-export const createEventsListItemTemplate = (point) => {
+const createEventsListItemTemplate = (point) => {
   const {dateFrom, dateTo, type, isFavorite, destination, basePrice, offers} = point;
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
-  return `
-    <li class="trip-events__item">
+  return (
+    `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="${dateFrom}">${dayjs(dateFrom).format('MMM D')}</time>
         <div class="event__type">
@@ -65,5 +66,27 @@ export const createEventsListItemTemplate = (point) => {
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
-    </li>`;
+    </li>`);
 };
+export default class EventsListItemView {
+  #element = null;
+  #point  = null;
+  constructor (point) {
+    this.#point = point;
+  }
+
+  get element () {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template () {
+    return createEventsListItemTemplate(this.#point);
+  }
+
+  removeElement () {
+    this.#element = null;
+  }
+}

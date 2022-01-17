@@ -1,3 +1,4 @@
+import { createElement } from '../render';
 import dayjs from 'dayjs';
 import {cities, offersSet, pointTypes} from '../mock/data';
 
@@ -34,7 +35,7 @@ const createOfferListTemplate = (pointOffers, pointTipe) => {
   ) : '';
 
 };
-export const createEditEventTemplate = (point = {}) => {
+const createEditEventTemplate = (point = {}) => {
   const {
     basePrice ='',
     dateFrom = dayjs(),
@@ -47,8 +48,7 @@ export const createEditEventTemplate = (point = {}) => {
     type = 'bus',
     offers = null,
   } = point;
-  return `
-  <li class="trip-events__item">
+  return (`<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
@@ -105,19 +105,42 @@ export const createEditEventTemplate = (point = {}) => {
       </header>
       <section class="event__details">
         ${createOfferListTemplate(offers, type)}
-        ${destination.description ? `<section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
-        ${destination.pictures ? `
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-            ${destination.pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`)}
-          </div>
-        </div>
-        ` : ''}
-      </section>` : ''}
-        
+        ${destination.description ? `
+        <section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+          <p class="event__destination-description">${destination.description}</p>
+          ${destination.pictures ? `
+          <div class="event__photos-container">
+            <div class="event__photos-tape">
+              ${destination.pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('')}
+            </div>
+          </div>` : ''}
+        </section>` : ''}
       </section>
     </form>
-  </li>`;
+  </li>`);
 };
+
+export default class EditEventsListItemView {
+  #element = null;
+  #point  = null;
+  constructor (point) {
+    this.#point = point;
+  }
+
+  get element () {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template () {
+    return createEditEventTemplate(this.#point);
+  }
+
+  removeElement () {
+    this.#element = null;
+  }
+}
+

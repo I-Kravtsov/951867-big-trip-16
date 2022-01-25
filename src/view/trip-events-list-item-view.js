@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from './abstract-view';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
@@ -68,25 +68,24 @@ const createEventsListItemTemplate = (point) => {
       </div>
     </li>`);
 };
-export default class EventsListItemView {
-  #element = null;
+export default class EventsListItemView extends AbstractView {
   #point  = null;
   constructor (point) {
+    super();
     this.#point = point;
-  }
-
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template () {
     return createEventsListItemTemplate(this.#point);
   }
 
-  removeElement () {
-    this.#element = null;
+  setRollupClickHandler = (callback) => {
+    this._callback.rollupClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClickHandler);
+  }
+
+  #rollupClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.rollupClick();
   }
 }

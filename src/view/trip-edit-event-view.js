@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from './abstract-view';
 import dayjs from 'dayjs';
 import {cities, offersSet, pointTypes} from '../mock/data';
 
@@ -121,26 +121,35 @@ const createEditEventTemplate = (point = {}) => {
   </li>`);
 };
 
-export default class EditEventsListItemView {
-  #element = null;
+export default class EditEventsListItemView extends AbstractView {
   #point  = null;
   constructor (point) {
+    super();
     this.#point = point;
-  }
-
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template () {
     return createEditEventTemplate(this.#point);
   }
 
-  removeElement () {
-    this.#element = null;
+  setRollupSubmitHandler = (callback) => {
+    this._callback.rollupSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#rollupSubmitHandler);
+  }
+
+  #rollupSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.rollupSubmit();
+  }
+
+  setRollupClickHandler = (callback) => {
+    this._callback.rollupClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClickHandler);
+  }
+
+  #rollupClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.rollupClick();
   }
 }
 

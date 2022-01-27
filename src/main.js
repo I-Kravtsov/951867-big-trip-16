@@ -1,4 +1,4 @@
-import { renderPosition, render } from './render';
+import { renderPosition, render, replace } from './render';
 import TabsView from './view/trip-tabs-view';
 import TripInfoView from './view/trip-info-view';
 import FilterView from './view/trip-filters-view';
@@ -21,11 +21,11 @@ const renderPoint = (listElement, point) => {
   const pointComponent = new EventsListItemView(point);
   const editPointComponent = new EditEventsListItemView(point);
   const replaceCardToForm = () => {
-    listElement.replaceChild(editPointComponent.element, pointComponent.element);
+    replace(editPointComponent, pointComponent);
   };
 
   const replaceFormToCard = () => {
-    listElement.replaceChild(pointComponent.element, editPointComponent.element);
+    replace(pointComponent, editPointComponent);
   };
   const onEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
@@ -35,37 +35,42 @@ const renderPoint = (listElement, point) => {
     }
   };
 
-  pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  // const onformSubmit = (evt) => {
+  //   evt.preventDefault();
+  //   replaceFormToCard();
+  //   document.removeEventListener('keydown', onEscKeyDown);
+  // };
+
+  pointComponent.setRollupClickHandler(() => {
     replaceCardToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  editPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  editPointComponent.setRollupClickHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  editPointComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  editPointComponent.setRollupSubmitHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(listElement, pointComponent.element, renderPosition.BEFOREEND);
+  render(listElement, pointComponent, renderPosition.BEFOREEND);
 };
 const renderRoute = (container, routePoints) => {
-  const eventsListComponent = new EventsListView().element;
+  const eventsListComponent = new EventsListView();
   if(routePoints.length === 0) {
-    render(container, new EmptyListView().element, renderPosition.BEFOREEND);
+    render(container, new EmptyListView(), renderPosition.BEFOREEND);
     return;
   }
-  render(container, new SortView().element, renderPosition.BEFOREEND);
+  render(container, new SortView(), renderPosition.BEFOREEND);
   render(container, eventsListComponent, renderPosition.BEFOREEND);
   for (let i = 0; i < routePoints.length; i++) {
     renderPoint(eventsListComponent, routePoints[i]);
   }
 };
-render(headerMainElement, new TripInfoView().element,renderPosition.AFTERBEGIN);
-render(headerMenuElement, new TabsView().element, renderPosition.BEFOREEND);
-render(headerFilterElement,new FilterView().element, renderPosition.BEFOREEND);
+render(headerMainElement, new TripInfoView(),renderPosition.AFTERBEGIN);
+render(headerMenuElement, new TabsView(), renderPosition.BEFOREEND);
+render(headerFilterElement,new FilterView(), renderPosition.BEFOREEND);
 renderRoute(tripEventsElement, points);

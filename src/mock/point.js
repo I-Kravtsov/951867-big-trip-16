@@ -2,6 +2,8 @@ import { getRandomElement, getRandomNumber, getRandomArray} from '../utils/utils
 import { pointTypes, cities, offersSet } from './data';
 import { LoremIpsum } from 'lorem-ipsum';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
+
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -54,7 +56,7 @@ export const generatePoint = () => {
       name: getRandomElement(cities),
       pictures: generatePictures(),
     },
-    id: 0,
+    id: nanoid(),
     isFavorite: Boolean(getRandomNumber(0, 1)),
     type: offerType,
     offers: generateOffers(offerType),

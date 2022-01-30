@@ -132,14 +132,14 @@ export default class EditEventsListItemView extends AbstractView {
     return createEditEventTemplate(this.#point);
   }
 
-  setRollupSubmitHandler = (callback) => {
-    this._callback.rollupSubmit = callback;
-    this.element.querySelector('form').addEventListener('submit', this.#rollupSubmitHandler);
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
-  #rollupSubmitHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.rollupSubmit();
+    this._callback.formSubmit(this.#point);
   }
 
   setRollupClickHandler = (callback) => {

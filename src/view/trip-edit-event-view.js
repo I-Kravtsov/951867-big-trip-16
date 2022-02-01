@@ -1,6 +1,9 @@
 import SmartView from './smart-view';
 import dayjs from 'dayjs';
 import {cities, offersSet, pointTypes} from '../mock/data';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createEventDestinationlist = (destinationPoints) => {
   const eventDestination = destinationPoints.map((destinationPoint) => `<option value="${destinationPoint}" ></option>`);
@@ -122,6 +125,8 @@ const createEditEventTemplate = (point = {}) => {
 };
 
 export default class EditEventsListItemView extends SmartView {
+  #datepicker = null;
+
   constructor (point) {
     super();
     this._data = EditEventsListItemView.parsePointToData(point);
@@ -132,6 +137,51 @@ export default class EditEventsListItemView extends SmartView {
     return createEditEventTemplate(this._data);
   }
 
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  }
+
+  #setDateFromDatepicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._data.dateFrom,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
+  }
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateData({
+      dateFrom: userDate
+    }, true);
+  }
+
+  #setDateToDatepicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._data.dateTo,
+        onChange: this.#dateToChangeHandler,
+      },
+    );
+  }
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateData({
+      dateTo: userDate
+    }, true);
+  }
+
   reset = (point) => {
     this.updateData(
       EditEventsListItemView.parsePointToData(point)
@@ -140,6 +190,7 @@ export default class EditEventsListItemView extends SmartView {
 
   restoreHandlers = () => {
     this.#setInnerHandlers();
+    // this.#setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollupClickHandler(this._callback.rollupClick);
   }
@@ -186,6 +237,8 @@ export default class EditEventsListItemView extends SmartView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#pointTypeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#pointDestinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#pointPriceChangeHandler);
+    this.#setDateFromDatepicker();
+    this.#setDateToDatepicker();
   };
 
   static parsePointToData = (point) => ({

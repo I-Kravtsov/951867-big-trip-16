@@ -1,4 +1,18 @@
 import { nanoid } from 'nanoid';
+import { getRandomNumber, getRandomArray} from '../utils/utils';
+import { LoremIpsum } from 'lorem-ipsum';
+
+const lorem = new LoremIpsum({
+  sentencesPerParagraph: {
+    max: 8,
+    min: 4
+  },
+  wordsPerSentence: {
+    max: 16,
+    min: 4
+  }
+});
+
 export const pointTypes = [
   'taxi',
   'bus',
@@ -11,8 +25,30 @@ export const pointTypes = [
   'restaurant',
 ];
 
-const citiesNames = 'Абаза, Абакан, Абдулино, Абинск, Агидель, Агрыз, Адыгейск, Азнакаево, Азов, Ак-Довурак, Аксай, Алагир, Алапаевск, Алатырь, Алдан, Алейск, Александров, Александровск, Александровск-Сахалинский, Алексеевка, Алексин, Алзамай, Алупка, Алушта, Альметьевск, Амурск, Анадырь, Анапа, Ангарск, Андреаполь, Анжеро-Судженск, Анива, Апатиты, Апрелевка, Апшеронск, Арамиль, Аргун, Ардатов, Ардон, Арзамас, Аркадак, Армавир, Армянск, Арсеньев, Арск, Артём, Артёмовск, Артёмовский, Архангельск, Асбест, Асино, Астрахань, Аткарск, Ахтубинск, Ачинск, Аша';
+const citiesNames = 'Абаза, Абакан, Абдулино, Абинск, Агидель, Агрыз, Адыгейск, Азнакаево, Азов, Ак-Довурак, Аксай, Алагир, Алапаевск, Алатырь, Алдан, Алейск, Александров, Александровск, Александровск-Сахалинский, Алексеевка, Алексин, Алзамай, Алупка, Алушта, Альметьевск';
 export const cities = citiesNames.split(', ');
+
+const generatePictures = () => {
+  const isPictures = Boolean(getRandomNumber(0,1));
+  if (!isPictures) {
+    return null;
+  }
+  const generatePicture = () => ({
+    src:  `http://picsum.photos/300/200?r=${Math.random()}`,
+    description: lorem.generateSentences(1),
+  });
+  return Array.from({length: getRandomNumber(0, 5)}, generatePicture);
+};
+
+const generateDestinations = (destinationPoint) => {
+  const destinationsList = getRandomArray(destinationPoint).map((destination) => ({
+    description: getRandomNumber(0, 1) ? null : lorem.generateSentences(getRandomNumber(0, 5)),
+    name: destination,
+    pictures: generatePictures(),
+  }));
+  return destinationsList;
+};
+export const destinations = generateDestinations(cities);
 
 export const offersSet = [
   {
@@ -100,3 +136,5 @@ export const offersSet = [
     ]
   }
 ];
+
+

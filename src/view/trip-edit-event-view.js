@@ -1,9 +1,9 @@
 import SmartView from './smart-view';
 import dayjs from 'dayjs';
-import {cities, offersSet, pointTypes} from '../mock/data';
+import {offersSet, pointTypes, destinations} from '../mock/data';
 
 const createEventDestinationlist = (destinationPoints) => {
-  const eventDestination = destinationPoints.map((destinationPoint) => `<option value="${destinationPoint}" ></option>`);
+  const eventDestination = destinationPoints.map((destinationPoint) => `<option value="${destinationPoint.name}" ></option>`);
   return  eventDestination.join('');
 };
 
@@ -77,7 +77,7 @@ const createEditEventTemplate = (point = {}) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-            ${createEventDestinationlist(cities)}
+            ${createEventDestinationlist(destinations)}
           </datalist>
         </div>
 
@@ -178,7 +178,7 @@ export default class EditEventsListItemView extends SmartView {
 
   #pointDestinationChangeHandler = (evt) => {
     this.updateData({
-      destination: {...this._data.destination, name: evt.target.value}
+      destination: destinations.find((destination) => destination.name === evt.target.value)
     });
   }
 

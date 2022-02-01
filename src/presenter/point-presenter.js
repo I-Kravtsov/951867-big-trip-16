@@ -51,6 +51,7 @@ export default class PointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#editPointComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
   }
@@ -80,6 +81,7 @@ export default class PointPresenter {
   #EscKeyDownhendler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#editPointComponent.reset(this.#point);
       this.#replaceFormToCard();
       document.removeEventListener('keydown', this.#EscKeyDownhendler);
     }
@@ -90,6 +92,7 @@ export default class PointPresenter {
   };
 
   #handleEditPointClick = () => {
+    this.#editPointComponent.reset(this.#point);
     this.#replaceFormToCard();
   };
 

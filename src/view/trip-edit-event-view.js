@@ -1,9 +1,9 @@
-import AbstractView from './abstract-view';
+import SmartView from './smart-view';
 import dayjs from 'dayjs';
-import {cities, offersSet, pointTypes} from '../mock/data';
+import {offersSet, pointTypes, destinations} from '../mock/data';
 
 const createEventDestinationlist = (destinationPoints) => {
-  const eventDestination = destinationPoints.map((destinationPoint) => `<option value="${destinationPoint}" ></option>`);
+  const eventDestination = destinationPoints.map((destinationPoint) => `<option value="${destinationPoint.name}" ></option>`);
   return  eventDestination.join('');
 };
 
@@ -77,7 +77,7 @@ const createEditEventTemplate = (point = {}) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-            ${createEventDestinationlist(cities)}
+            ${createEventDestinationlist(destinations)}
           </datalist>
         </div>
 
@@ -121,15 +121,27 @@ const createEditEventTemplate = (point = {}) => {
   </li>`);
 };
 
-export default class EditEventsListItemView extends AbstractView {
-  #point  = null;
+export default class EditEventsListItemView extends SmartView {
   constructor (point) {
     super();
-    this.#point = point;
+    this._data = EditEventsListItemView.parsePointToData(point);
+    this.#setInnerHandlers();
   }
 
   get template () {
-    return createEditEventTemplate(this.#point);
+    return createEditEventTemplate(this._data);
+  }
+
+  reset = (point) => {
+    this.updateData(
+      EditEventsListItemView.parsePointToData(point)
+    );
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setRollupClickHandler(this._callback.rollupClick);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -139,7 +151,7 @@ export default class EditEventsListItemView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(EditEventsListItemView.psrseDataToPoint(this._data));
   }
 
   setRollupClickHandler = (callback) => {
@@ -150,6 +162,39 @@ export default class EditEventsListItemView extends AbstractView {
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.rollupClick();
+  }
+
+  #pointTypeChangeHandler = (evt) => {
+    this.updateData({
+      type: evt.target.value
+    });
+  }
+
+  #pointPriceChangeHandler = (evt) => {
+    this.updateData({
+      basePrice: evt.target.value
+    });
+  }
+
+  #pointDestinationChangeHandler = (evt) => {
+    this.updateData({
+      destination: destinations.find((destination) => destination.name === evt.target.value)
+    });
+  }
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#pointTypeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#pointDestinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#pointPriceChangeHandler);
+  };
+
+  static parsePointToData = (point) => ({
+    ...point
+  })
+
+  static psrseDataToPoint = (data) => {
+    const point = {...data};
+    return point;
   }
 }
 

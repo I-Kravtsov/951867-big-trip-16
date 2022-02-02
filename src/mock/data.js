@@ -10,7 +10,7 @@ const lorem = new LoremIpsum({
   wordsPerSentence: {
     max: 16,
     min: 4,
-  }
+  },
 });
 
 export const pointTypes = [
@@ -68,7 +68,7 @@ export const offersSet = [
         'id': nanoid(),
         'title': 'Order Uber',
         'price': 20,
-      }
+      },
     ]
   },
   {
@@ -98,7 +98,7 @@ export const offersSet = [
         'id': nanoid(),
         'title': 'Travel by train',
         'price': 40,
-      }
+      },
     ]
   },
   {
@@ -132,9 +132,9 @@ export const offersSet = [
         'id': nanoid(),
         'title': 'Lunch in city',
         'price': 30,
-      }
+      },
     ]
-  }
+  },
 ];
 
 

@@ -2,6 +2,7 @@ import SmartView from './smart-view';
 import dayjs from 'dayjs';
 import {cities, offersSet, pointTypes} from '../mock/data';
 import flatpickr from 'flatpickr';
+import he from 'he';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -20,13 +21,13 @@ const createOfferListTemplate = (pointOffers, pointTipe) => {
   };
   const offerList = createOfferList(pointTipe);
   const createOffersTemplate = (offers) => offers.map((offer) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${pointOffers.includes(offer) ? 'checked' : ''} >
-  <label class="event__offer-label" for="event-offer-${offer.id}-1">
-    <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-    <span class="event__offer-price">${offer.price}</span>
-  </label>
-</div>`).join('');
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${pointOffers.includes(offer) ? 'checked' : ''} >
+    <label class="event__offer-label" for="event-offer-${offer.id}-1">
+      <span class="event__offer-title">${he.encode(offer.title)}</span>
+        &plus;&euro;&nbsp;
+      <span class="event__offer-price">${(offer.price)}</span>
+    </label>
+  </div>`).join('');
   return offerList ? (
     `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -193,6 +194,17 @@ export default class EditEventsListItemView extends SmartView {
     // this.#setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setRollupClickHandler(this._callback.rollupClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+  }
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+  }
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(EditEventsListItemView.parseDataToPoint(this._data));
   }
 
   setFormSubmitHandler = (callback) => {
@@ -202,7 +214,7 @@ export default class EditEventsListItemView extends SmartView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(EditEventsListItemView.psrseDataToPoint(this._data));
+    this._callback.formSubmit(EditEventsListItemView.parseDataToPoint(this._data));
   }
 
   setRollupClickHandler = (callback) => {
@@ -245,7 +257,7 @@ export default class EditEventsListItemView extends SmartView {
     ...point
   })
 
-  static psrseDataToPoint = (data) => {
+  static parseDataToPoint = (data) => {
     const point = {...data};
     return point;
   }

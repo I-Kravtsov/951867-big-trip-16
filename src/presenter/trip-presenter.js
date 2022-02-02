@@ -8,9 +8,11 @@ import PointNewPresenter from './point-new-presenter.js';
 import dayjs from 'dayjs';
 import { UpdateType, UserAction, FilterType } from '../const.js';
 import { filter } from '../utils/filter.js';
+import LoadingView from '../view/loading-view.js';
 
 export default class TripPresenter {
   #tripContainer = null;
+  #loadingComponent = new LoadingView();
   #emptyListComponent = null;
   #headerMainElement = document.querySelector('.trip-main');
   #eventsListComponent = new EventsListView();
@@ -22,6 +24,7 @@ export default class TripPresenter {
   #filterType = FilterType.EVERYTHING;
   #pointsModel = null;
   #filterModel = null;
+  #isLoading = true;
 
   constructor (tripContainer, pointsModel, filterModel){
     this.#tripContainer = tripContainer;
@@ -83,6 +86,11 @@ export default class TripPresenter {
         this.#clearRoute();
         this.#renderRoute();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderRoute();
+        break;
     }
   }
 
@@ -103,6 +111,10 @@ export default class TripPresenter {
   #renderEmptyList = () => {
     this.#emptyListComponent = new EmptyListView(this.#filterType);
     render(this.#tripContainer, this.#emptyListComponent, renderPosition.BEFOREEND);
+  }
+
+  #renderLoading = () => {
+    render(this.#tripContainer, this.#loadingComponent, renderPosition.AFTERBEGIN);
   }
 
   #renderSort = () => {
@@ -129,6 +141,10 @@ export default class TripPresenter {
   }
 
   #renderRoute = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     if(this.points.length === 0) {
       this.#renderEmptyList();
       return;
@@ -145,6 +161,7 @@ export default class TripPresenter {
     this.#pointPresenter.clear();
     remove(this.#infoComponent);
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     remove(this.#eventsListComponent);
     if(this.#emptyListComponent) {
       remove(this.#emptyListComponent);

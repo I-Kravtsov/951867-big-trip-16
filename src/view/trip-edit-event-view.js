@@ -25,7 +25,7 @@ const createOfferListTemplate = (pointOffers, pointTipe) => {
     <label class="event__offer-label" for="event-offer-${offer.id}-1">
       <span class="event__offer-title">${he.encode(offer.title)}</span>
         &plus;&euro;&nbsp;
-      <span class="event__offer-price">${(offer.price)}</span>
+      <span class="event__offer-price">${offer.price}</span>
     </label>
   </div>`).join('');
   return offerList ? (
@@ -235,7 +235,7 @@ export default class EditEventsListItemView extends SmartView {
 
   #pointPriceChangeHandler = (evt) => {
     this.updateData({
-      basePrice: evt.target.value
+      basePrice: +evt.target.value
     });
   }
 

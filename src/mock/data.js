@@ -5,11 +5,11 @@ import { LoremIpsum } from 'lorem-ipsum';
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
     max: 8,
-    min: 4
+    min: 4,
   },
   wordsPerSentence: {
     max: 16,
-    min: 4
+    min: 4,
   }
 });
 
@@ -57,17 +57,17 @@ export const offersSet = [
       {
         'id': nanoid(),
         'title': 'Upgrade to a business class',
-        'price': 120
+        'price': 120,
       },
       {
         'id': nanoid(),
         'title': 'Choose the radio station',
-        'price': 60
+        'price': 60,
       },
       {
         'id': nanoid(),
         'title': 'Order Uber',
-        'price': 20
+        'price': 20,
       }
     ]
   },
@@ -77,27 +77,27 @@ export const offersSet = [
       {
         'id': nanoid(),
         'title': 'Add luggage',
-        'price': 30
+        'price': 30,
       },
       {
         'id': nanoid(),
         'title': 'Switch to comfort class',
-        'price': 100
+        'price': 100,
       },
       {
         'id': nanoid(),
         'title': 'Add meal',
-        'price': 15
+        'price': 15,
       },
       {
         'id': nanoid(),
         'title': 'Choose seats',
-        'price': 5
+        'price': 5,
       },
       {
         'id': nanoid(),
         'title': 'Travel by train',
-        'price': 40
+        'price': 40,
       }
     ]
   },
@@ -107,7 +107,7 @@ export const offersSet = [
       {
         'id': nanoid(),
         'title': 'Rent a car',
-        'price': 200
+        'price': 200,
       },
     ]
   },
@@ -117,7 +117,7 @@ export const offersSet = [
       {
         'id': nanoid(),
         'title': 'Add breakfast',
-        'price': 50
+        'price': 50,
       },
     ]
   },
@@ -127,11 +127,11 @@ export const offersSet = [
       {
         'id': nanoid(),
         'title': 'Book tickets',
-        'price': 40
+        'price': 40,
       }, {
         'id': nanoid(),
         'title': 'Lunch in city',
-        'price': 30
+        'price': 30,
       }
     ]
   }

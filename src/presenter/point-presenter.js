@@ -1,6 +1,7 @@
 import { renderPosition, render, replace, remove} from '../render.js';
 import EventsListItemView from '../view/trip-events-list-item-view';
 import EditEventsListItemView from '../view/trip-edit-event-view';
+import { UserAction, UpdateType } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -33,6 +34,7 @@ export default class PointPresenter {
     this.#editPointComponent.setFormSubmitHandler(this.#handleEditFormSubmit);
     this.#editPointComponent.setRollupClickHandler(this.#handleEditPointClick);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#editPointComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if(prevEditPointComponent === null || prevPointComponent === null) {
       render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
@@ -74,8 +76,19 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      point
+    );
+  };
+
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      {...this.#point, isFavorite: !this.#point.isFavorite});
   }
 
   #EscKeyDownhendler = (evt) => {
@@ -96,8 +109,11 @@ export default class PointPresenter {
     this.#replaceFormToCard();
   };
 
-  #handleEditFormSubmit = (point) => {
-    this.#changeData(point);
+  #handleEditFormSubmit = (update) => {
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      update);
     this.#replaceFormToCard();
   };
 }
